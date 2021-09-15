@@ -88,4 +88,5 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 FEED_FORMAT="csv"
-FEED_URI="wine.csv"
+FEED_URI="wine_final.csv"
+FEED_EXPORT_FIELDS= ["png" ,"winery" ,"name_ko" ,"name_en" ,"classes" ,"price" ,"nationality","산지" ,"sweet" ,"acidity" ,"body" ,"tanin" ,"food_matching" ,"grape" ,"alcohol" ,"vintage"]
