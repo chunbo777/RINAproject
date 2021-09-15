@@ -2,7 +2,7 @@ import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
 import sys
-sys.path.insert(0,"/home/tf-dev-01/workspace_sol/wn/rina/rina/")
+sys.path.insert(0,"/home/tf-dev-01/workspace_sol/wn/rina/RINAproject/rina/")
 from items import RinaItem
 from bs4 import BeautifulSoup
 import traceback
@@ -12,14 +12,15 @@ class WineSpider(scrapy.Spider):
     name = "rinawine"
     allowed_domains = ["https://www.wine21.com"]
     # wine_idx=168855
-    start_urls=[f"https://www.wine21.com/13_search/wine_view.html?Idx={168855-i}&lq=LIST" for i in range(24000)]
+    start_urls=[f"https://www.wine21.com/13_search/wine_view.html?Idx={169258-i}&lq=LIST" for i in range(30000)]
+    # start_urls=["https://www.wine21.com/13_search/wine_view.html?Idx=158867"]
     handle_httpstatus_list = [401, 404]
-    download_delay = 1.5
-    rules = (
-        Rule(LinkExtractor(allow=(r'/recipes/[0-9]+',), deny=(r'/recipes/[0-9]+/')), callback='parse_item', follow=True),
-        # Rule(LinkExtractor(allow=(r'/recipes/[0-9]+',), deny=(r'/recipes/[0-9]+/')), callback='parse_item', follow=True, process_links='process_link', process_request='process_req'),
-        # Rule(LinkExtractor(), follow=True)# 디버그 용
-    )
+    download_delay = 2
+    # rules = (
+    #     Rule(LinkExtractor(allow=(r'/recipes/[0-9]+',), deny=(r'/recipes/[0-9]+/')), callback='parse_item', follow=True),
+    #     # Rule(LinkExtractor(allow=(r'/recipes/[0-9]+',), deny=(r'/recipes/[0-9]+/')), callback='parse_item', follow=True, process_links='process_link', process_request='process_req'),
+    #     # Rule(LinkExtractor(), follow=True)# 디버그 용
+    # )
 
     # def start_requests(self):
     #     # recipe_idx = 1
@@ -47,16 +48,22 @@ class WineSpider(scrapy.Spider):
             price = soup.select_one('body > section > div.inner > div.clear > div.wine-top-right > p.wine-price > strong').text
             # score_expert =soup.select_one("body > section > div.inner > div.clear > div.wine-top-right > p.wine-price > strong").text
             try:
+                nationality=soup.select_one("#detail > div > div > dl:nth-child(2) > dd > a:nth-of-type(1)").text
+            except:
+                nationality="생산국가미상"
+            
+            try:    
                 winery = soup.select_one("#detail > div > div > dl:nth-of-type(2) > dd > a:nth-of-type(2)").text #생산지역
             except:
-                winery="생산지역미상"
+                    winery="생산지역미상"
+            ##detail > div > div > dl:nth-child(2) > dd > a:nth-child(1)
             # score_customer = soup.select('body > section > div.inner > div.clear > div.wine-top-right > div.wine-top-right-inner > div.score > div > dl:nth-child(2) > dd > span')
             sw = str(soup.select_one("body > section > div.inner > div.clear > div.wine-top-right > div.wine-components > ul > li:nth-child(1) > div"))
             sweet=len(sw.split('=')[3:])
             ac = str(soup.select_one("body > section > div.inner > div.clear > div.wine-top-right > div.wine-components > ul > li:nth-child(2) > div"))
             acidity=len(ac.split('=')[3:])
-            # 바디감 가져오기
-            bd =  str(soup.select_one("body > section > div.inner > div.clear > div.wine-top-right > div.wine-components > ul > li:nth-child(2) > div"))
+            # 바디감 가져오기body > section > div.inner > div.clear > div.wine-top-right > div.wine-components > ul > li:nth-child(3) > div
+            bd =  str(soup.select_one("body > section > div.inner > div.clear > div.wine-top-right > div.wine-components > ul > li:nth-child(3) > div"))
             body=len(bd.split('=')[3:])
             tn= str(soup.select_one("body > section > div.inner > div.clear > div.wine-top-right > div.wine-components > ul > li:nth-child(4) > div"))
             tanin = len(tn.split('=')[3:])
@@ -86,17 +93,19 @@ class WineSpider(scrapy.Spider):
             # link = response.url
             raw=str(raw)
             vin =raw.split("(")[1]
-            vintage=vin[1:5]
+            vin1= vin.split(",")[0]
+            vintage=vin1
             # vintage_num=r.search(raw)
 
             item["png"] = png
-            item["label2"] = label2
+            item["winery"] = label2
             item["name_ko"] = name_ko
             item["name_en"] =name_en
             item["classes"] = classes
             item["price"] = price
             # item["score_expert"] = score_expert
-            item["winery"] = winery
+            item["nationality"]=nationality
+            item["산지"] = winery
             # item["score_customer"] = score_customer 
             item["sweet"] = sweet
             item["acidity"] = acidity

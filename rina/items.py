@@ -9,13 +9,14 @@ import scrapy
 class RinaItem(scrapy.Item):
 
     png = scrapy.Field()
-    label2 = scrapy.Field()
+    winery = scrapy.Field()
     name_ko = scrapy.Field()
     name_en = scrapy.Field()
     classes = scrapy.Field()
     price = scrapy.Field()
     # score_expert = scrapy.Field()
-    winery = scrapy.Field()
+    nationality=scrapy.Field()
+    산지 = scrapy.Field()
     # score_customer = scrapy.Field()
     sweet = scrapy.Field()
     acidity = scrapy.Field()
