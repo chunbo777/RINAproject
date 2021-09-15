@@ -6,13 +6,13 @@ bin-release/
 
 # Other files and folders
 .settings/
+.datain/
 
 # Executables
 *.swf
 *.air
 *.ipa
 *.apk
-*.csv
 
 
 # Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
